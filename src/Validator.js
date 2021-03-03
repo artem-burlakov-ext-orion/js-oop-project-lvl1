@@ -13,6 +13,13 @@ export default class Validator {
     this.type = 'number';
     return new Validator([...this.constraints, (arg) => typeof arg === 'number'], this.type);
   }
+
+  array() {
+    this.type = 'array';
+    return new Validator([...this.constraints, (arg) => typeof arg === 'number'], this.type);
+  }
+
+
   
   required() {
     switch (this.type) {
@@ -21,6 +28,9 @@ export default class Validator {
         return new Validator(this.constraints, this.type);
       case 'number':
         this.constraints = [...this.constraints, (arg) => !!arg];
+        return new Validator(this.constraints, this.type);
+      case 'array':
+        this.constraints = [...this.constraints, (arg) => arg.isArray()];
         return new Validator(this.constraints, this.type);
       default:
         throw new Error('uknown type');
@@ -39,6 +49,11 @@ export default class Validator {
 
   range(min, max) {
     this.constraints = [...this.constraints, (arg) => arg >= min && arg <= max];
+    return new Validator(this.constraints, this.type);
+  }
+
+  sizeOf(length) {
+    this.constraints = [...this.constraints, (arg) => arg.length === length];
     return new Validator(this.constraints, this.type);
   }
 

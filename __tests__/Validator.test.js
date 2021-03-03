@@ -56,6 +56,37 @@ it(`should return false because 5 not in range 6, 10`, () => {
   expect(new Validator().number().range(6, 10).isValid(5)).toBe(false);
 })
 
+it(`should return true because [] is array`, () => {
+  expect(new Validator().array().isValid([])).toBe(false);
+})
+
+it(`should return true because ['a', 'b'].length === 2`, () => {
+  expect(new Validator().array().sizeOf(2).isValid(['a', 'b'])).toBe(false);
+})
+
+it(`should return false because null is not array`, () => {
+  expect(new Validator().array().isValid(null)).toBe(false);
+})
+
+
+
+
+// const schema = v.array();
+
+// schema.isValid(null); // false
+
+// const schema = schema.required();
+
+// schema.isValid([]); // true
+// schema.isValid(['hexlet']); // true
+
+// schema.sizeof(2);
+
+// schema.isValid(['hexlet']); // false
+// schema.isValid(['hexlet', 'code-basics']); // true
+
+
+
 
 // it('should have contains method', () => {
 //   expect(new Validator()).toBeInstanceOf(Validator);
