@@ -28,7 +28,7 @@ it(`should return false because 5 is not string`, () => {
   expect(new Validator().string().isValid(5)).toBe(false);
 })
 
-it('should return instanceOf Validator after .number()', () => {
+it('should return instanceOf Validator because .number()', () => {
   expect(new Validator().number()).toBeInstanceOf(Validator)
 })
 
@@ -44,8 +44,8 @@ it(`should return true because typeof 5 === number and 5 > 0`, () => {
   expect(new Validator().number().positive().isValid(5)).toBe(true);
 })
 
-it(`should return false because typeof 5 === number and -1 < 0`, () => {
-  expect(new Validator().number().positive().isValid(5)).toBe(false);
+it(`should return false because -1 < 0`, () => {
+  expect(new Validator().number().positive().isValid(-1)).toBe(false);
 })
 
 it(`should return true because typeof 5 === number and 5 in range 1, 10`, () => {
