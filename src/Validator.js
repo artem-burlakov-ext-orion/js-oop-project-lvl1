@@ -26,6 +26,7 @@ export default class Validator {
   }
 
   required() {
+    console.log(this.type);
     switch (this.type) {
       case 'string':
         this.constraints.required = (value) => value.length > 0;
