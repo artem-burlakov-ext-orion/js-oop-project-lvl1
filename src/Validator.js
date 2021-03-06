@@ -21,7 +21,6 @@ export default class Validator {
   }
 
   object() {
-    this.constraints.nullValidation = (value) => value !== null;
     return new Validator(this.constraints, 'object');
   }
 
