@@ -1,8 +1,8 @@
 export default class Validator {
-  constructor(constraints = [], type = '') {
+  constructor(constraints = [], type = '', isNullValid = true) {
     this.constraints = constraints;
     this.type = type;
-    this.isNullValid = true;
+    this.isNullValid = isNullValid;
   }
 
   shape(schema) {
@@ -32,22 +32,19 @@ export default class Validator {
   }
 
   array() {
-    return new Validator([...this.constraints, 'array']);
+    return new Validator([...this.constraints], 'array', false);
   }
 
   required() {
     switch (this.type) {
       case 'string':
-        this.isNullValid = false;
         this.constraints = [...this.constraints, (arg) => (arg ? arg.length > 0 : false)];
-        return new Validator(this.constraints, this.type);
+        return new Validator(this.constraints, this.type, false);
       case 'number':
-        this.isNullValid = false;
         this.constraints = [...this.constraints, (arg) => !!arg];
-        return new Validator(this.constraints, this.type);
+        return new Validator(this.constraints, this.type, false);
       case 'array':
-        this.isNullValid = false;
-        this.constraints = [...this.constraints, (arg) => arg.isArray()];
+        this.constraints = [...this.constraints, (arg) => Array.isArray(arg)];
         return new Validator(this.constraints, this.type);
       default:
         throw new Error('uknown type');
@@ -96,8 +93,8 @@ export default class Validator {
       });
       return res.every((el) => !!el);
     }
-
-    if (this.type = 'object') {
+    if (this.type === 'object') {
+      console.log('!!!!');
       const res = Object.entries(arg).map(([key, value]) => {
         const p = this.constraints.find((c) => c.prop === key);
         return p.constraints.map((c) => {
