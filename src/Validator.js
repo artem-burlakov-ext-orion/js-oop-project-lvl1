@@ -79,6 +79,7 @@ export default class Validator {
 
 
   isValid(value) {
+    console.log(value);
     if (this.type === 'object') {
       return Object.entries(value).map(([prop, val]) => {
         return val === null
