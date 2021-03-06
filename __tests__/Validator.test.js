@@ -8,8 +8,6 @@ it('should return instanceOf Validator after .string()', () => {
   expect(new Validator().string()).toBeInstanceOf(Validator)
 })
 
-
-
 it(`should return true because typeof '' === string`, () => {
   expect(new Validator().string().isValid('')).toBe(true);
 })
@@ -17,17 +15,6 @@ it(`should return true because typeof '' === string`, () => {
 it(`should return true because 'required' does notexist`, () => {
   expect(new Validator().string().isValid(null)).toBe(true);
 })
-
-
-// schema.required();
-
-// schema.isValid('what does the fox say'); // true
-// schema.isValid('hexlet'); // true
-// schema.isValid(null); // false
-// schema.isValid(''); // false
-
-
-
 
 it('should return instanceOf Validator after methods chaining', () => {
   expect(new Validator().string().required()).toBeInstanceOf(Validator)
@@ -45,16 +32,15 @@ it(`should return false because 'required' exist`, () => {
   expect(new Validator().string().required().isValid(null)).toBe(false);
 })
 
-
 it(`should return false because 5 is not string`, () => {
   expect(new Validator().string().isValid(5)).toBe(false);
 })
 
-it(`should return true because `, () => {
+it(`should return true because value contain argument`, () => {
   expect(new Validator().string().contains('what').isValid('what does the fox say')).toBe(true);
 })
 
-it(`should return false because `, () => {
+it(`should return false because value not contain argument`, () => {
   expect(new Validator().string().contains('whatthe').isValid('what does the fox say')).toBe(false);
 })
 
@@ -74,39 +60,71 @@ it(`should return false because .required()`, () => {
   expect(new Validator().number().required().isValid(null)).toBe(false);
 })
 
+it(`should return true because typeof 5 === number and 5 > 0`, () => {
+  expect(new Validator().number().positive().isValid(5)).toBe(true);
+})
+
+it(`should return false because -1 < 0`, () => {
+  expect(new Validator().number().positive().isValid(-1)).toBe(false);
+})
+
+it(`should return true because typeof 5 === number and 5 in range 1, 10`, () => {
+  expect(new Validator().number().range(1, 10).isValid(5)).toBe(true);
+})
+
+it(`should return false because 5 not in range 6, 10`, () => {
+  expect(new Validator().number().range(6, 10).isValid(5)).toBe(false);
+})
+
+it(`should return true because '[]' is array`, () => {
+  expect(new Validator().array().required().isValid([])).toBe(true);
+})
+
+it(`should return true because ['a', 'b'].length === 2`, () => {
+  expect(new Validator().array().sizeOf(2).isValid(['a', 'b'])).toBe(true);
+})
+
+it(`should return false because ['a', 'b'].length !== 1`, () => {
+  expect(new Validator().array().sizeOf(1).isValid(['a', 'b'])).toBe(false);
+})
+
+it(`should return false because 'required' does not exist`, () => {
+  expect(new Validator().array().isValid(null)).toBe(false);
+})
+
+it(`should return true`, () => {
+  expect(new Validator().object().shape({
+    name: new Validator().string().required(),
+    age: new Validator().number().positive(),
+  }).isValid({ name: 'kolya', age: 100 })).toBe(true);
+})
+
+it(`should return true`, () => {
+  expect(new Validator().object().shape({
+    name: new Validator().string().required(),
+    age: new Validator().number().positive(),
+  }).isValid({ name: 'maya', age: null })).toBe(true);
+})
+
+it(`should return false`, () => {
+  expect(new Validator().object().shape({
+    name: new Validator().string().required(),
+    age: new Validator().number().positive(),
+  }).isValid({ name: '', age: null })).toBe(false);
+})
 
 
+// const v = new Validator();
 
-// it(`should return true because typeof 5 === number and 5 > 0`, () => {
-//   expect(new Validator().number().positive().isValid(5)).toBe(true);
-// })
+// const schema = v.object();
 
-// it(`should return false because -1 < 0`, () => {
-//   expect(new Validator().number().positive().isValid(-1)).toBe(false);
-// })
+// // Позволяет описывать валидацию для свойств объекта
+// schema.shape({
+//   name: v.string().required(),
+//   age: v.number().positive(),
+// });
 
-// it(`should return true because typeof 5 === number and 5 in range 1, 10`, () => {
-//   expect(new Validator().number().range(1, 10).isValid(5)).toBe(true);
-// })
-
-// it(`should return false because 5 not in range 6, 10`, () => {
-//   expect(new Validator().number().range(6, 10).isValid(5)).toBe(false);
-// })
-
-// it(`should return true because '[]' is array`, () => {
-//   expect(new Validator().array().required().isValid([])).toBe(true);
-// })
-
-// it(`should return true because ['a', 'b'].length === 2`, () => {
-//   expect(new Validator().array().sizeOf(2).isValid(['a', 'b'])).toBe(false);
-// })
-
-// it(`should return false because 'required' does not exist`, () => {
-//   expect(new Validator().array().isValid(null)).toBe(false);
-// })
-
-
-
-// it(`should return true because typeof 5 === number`, () => {
-//   expect(new Validator().number().isValid(5)).toBe(true);
-// })
+// schema.isValid({ name: 'kolya', age: 100 }); // true
+// schema.isValid({ name: 'maya', age: null }); // true
+// schema.isValid({ name: '', age: null }); // false
+// schema.isValid({ name: 'ada', age: -5 }); // false
