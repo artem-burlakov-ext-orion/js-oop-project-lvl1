@@ -115,22 +115,3 @@ export default class Validator {
     return this.constraints.map((c) => c(arg)).every((el) => el === true);
   }
 }
-
-const v = new Validator();
-
-// let fn = (value, start) => value.startsWith(start);
-// // Метод добавления новых валидаторов
-// // addValidator(type, name, fn)
-// v.addValidator('string', 'startWith', fn);
-
-// // Новые валидаторы вызываются через метод test
-// const schema = v.string().test('startWith', 'H');
-// console.log(schema.isValid('exlet')); // false
-// console.log(schema.isValid('Hexlet')); // true
-
-const fn = (value, min) => value >= min;
-v.addValidator('number', 'min', fn);
-
-const schema = v.number().test('min', 5);
-console.log(schema.isValid(4)); // false
-console.log(schema.isValid(6)); // true
