@@ -5,7 +5,7 @@ export default class Validator {
     this.constraints = constraints;
     console.log('-----------------------------------');
     console.log('THIS_CONSTRAINTS: ', this.constraints);
-    console.log('THIS_CONSTRAINTS: ', this.type);
+    console.log('THIS_TYPE: ', this.type);
     this.type = type;
   }
 
