@@ -112,3 +112,10 @@ it('should return false', () => {
     age: new Validator().number().positive(),
   }).isValid({ name: '', age: null })).toBe(false);
 });
+
+it('should return false', () => {
+  expect(new Validator().object().shape({
+    name: new Validator().string().required(),
+    age: new Validator().number().positive(),
+  }).isValid({ name: 'ada', age: -5 })).toBe(false);
+});
