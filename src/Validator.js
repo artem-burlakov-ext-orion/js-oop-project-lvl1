@@ -1,17 +1,18 @@
 export default class Validator {
-  constructor(constraints = {
-    nullValidation: () => true,
-  }, type = '') {
+  constructor(constraints = { nullValidation: () => true }, type = '') {
     this.constraints = constraints;
     this.type = type;
-    console.log('-----------------------------------');
-    console.log('THIS_CONSTRAINTS: ', this.constraints);
-    console.log('THIS_TYPE: ', this.type);
+    // console.log('-----------------------------------');
+    // console.log('THIS_CONSTRAINTS: ', this.constraints);
+    // console.log('THIS_TYPE: ', this.type);
   }
 
   string() {
-    this.constraints.isString = (value) => typeof value === 'string';
-    return new Validator(this.constraints, 'string');
+    return new Validator(
+      {
+        ...this.constraints,
+        isString: (value) => typeof value === 'string',
+      }, 'string');
   }
 
   number() {
@@ -19,8 +20,11 @@ export default class Validator {
   }
 
   array() {
-    this.constraints.nullValidation = (value) => value !== null;
-    return new Validator(this.constraints, 'array');
+    return new Validator(
+      {
+        ...this.constraints,
+        nullValidation: (value) => value !== null,
+      }, 'array');
   }
 
   object() {
@@ -30,74 +34,99 @@ export default class Validator {
   required() {
     switch (this.type) {
       case 'string':
-        this.constraints.required = (value) => value.length > 0;
-        this.constraints.nullValidation = (value) => value !== null;
-        return new Validator(this.constraints, this.type);
+        return new Validator(
+          {
+            ...this.constraints,
+            required: (value) => value.length > 0,
+            nullValidation: (value) => value !== null,
+          }, this.type);
       case 'number':
-        this.constraints.required = (value) => typeof value === 'number';
-        this.constraints.nullValidation = (value) => value !== null;
-        return new Validator(this.constraints, this.type);
+        return new Validator(
+          {
+            ...this.constraints,
+            required: (value) => typeof value === 'number',
+            nullValidation: (value) => value !== null,
+          }, this.type);
       case 'array':
-        this.constraints.required = (value) => Array.isArray(value);
-        return new Validator(this.constraints, this.type);
+        return new Validator(
+          {
+            ...this.constraints,
+            required: (value) => Array.isArray(value)
+          }, this.type);
       default:
         throw new Error('uknown type');
     }
   }
 
   contains(substr) {
-    this.constraints.isContains = (value) => value.includes(substr);
-    return new Validator(this.constraints, this.type);
+    return new Validator(
+      {
+        ...this.constraints,
+        isContains: (value) => value.includes(substr),
+      }, this.type);
   }
 
   positive() {
-    this.constraints.isPositive = (value) => value > 0;
-    return new Validator(this.constraints, this.type);
+    return new Validator(
+      {
+        ...this.constraints,
+        isPositive: (value) => value > 0,
+      }, this.type);
   }
 
   range(min, max) {
-    this.constraints.isInRange = (value) => value >= min && value <= max;
-    return new Validator(this.constraints, this.type);
+    return new Validator(
+      {
+        ...this.constraints,
+        isInRange: (value) => value >= min && value <= max,
+      }, this.type);
   }
 
   sizeOf(length) {
-    this.constraints.lengthValidate = (value) => value.length === length;
-    return new Validator(this.constraints, this.type);
+    return new Validator({
+      ...this.constraints,
+     lengthValidate: (value) => value.length === length,
+    }, this.type);
   }
 
   shape(schema) {
-    console.log('SCHEMA: ', schema);
-    this.constraints['schema'] = schema;
-    return new Validator(this.constraints, this.type);
+    this.constraints.schema = schema;
   }
 
   addValidator(type, methodName, fn) {
-    this.constraints[methodName] = { fn };
-    return new Validator(this.constraints, type);
+    this.constraints[methodName] = fn;
+    this.type = type;
   }
 
   test(methodName, arg) {
-    this.constraints[methodName].arg = arg;
-    return new Validator(this.constraints, this.type);
+    // this.constraints[methodName].arg = arg;
+    return new Validator({
+      ...this.constraints,
+      [methodName]: {
+        ...this.constraints[methodName],
+        arg,
+      }
+    }, this.type);
   }
 
   isValid(value) {
-    console.log('V: ', value);
-    console.log('THIS CONSTRAINTS: ', this.constraints);
+    
     if (value === null) {
       return this.constraints.nullValidation(value);
     }
     if (this.type === 'object') {
       console.log('!!');
+      console.log('V: ', value);
+      console.log('THIS CONSTRAINTS: ', this.constraints);
       const res = Object.entries(value).map(([prop, val]) => {
         if (val === null) {
           return this.constraints.schema[prop].constraints.nullValidation(val)
         }
-        console.log('PROP AND VAL: ', prop, val);
-        console.log(this.constraints.schema[prop]);
+        // console.log('PROP AND VAL: ', prop, val);
+        // console.log(this.constraints.schema[prop]);
         const res1 = Object.values(this.constraints.schema[prop].constraints)
           .map((c) => c(val));
-        console.log('RES1: ', res1);
+        // console.log('RES1: ', res1);
         return res1.every((el) => el);
       })
       return res.every((el) => el);

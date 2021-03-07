@@ -93,29 +93,41 @@ it('should return false because \'required\' does not exist', () => {
 });
 
 it('should return true1', () => {
-  expect(new Validator().object().shape({
-    name: new Validator().string().required(),
-    age: new Validator().number().positive(),
-  }).isValid({ name: 'kolya', age: 100 })).toBe(true);
+  const v = new Validator();
+  const schema = v.object();
+  schema.shape({
+    name: v.string().required(),
+    age: v.number().positive(),
+  });
+  expect(schema.isValid({ name: 'kolya', age: 100 })).toBe(true);
 });
 
 it('should return true2', () => {
-  expect(new Validator().object().shape({
-    name: new Validator().string().required(),
-    age: new Validator().number().positive(),
-  }).isValid({ name: 'maya', age: null })).toBe(true);
+  const v = new Validator();
+  const schema = v.object();
+  schema.shape({
+    name: v.string().required(),
+    age: v.number().positive(),
+  });
+  expect(schema.isValid({ name: 'maya', age: null })).toBe(true);
 });
 
 it('should return false', () => {
-  expect(new Validator().object().shape({
-    name: new Validator().string().required(),
-    age: new Validator().number().positive(),
-  }).isValid({ name: '', age: null })).toBe(false);
+  const v = new Validator();
+  const schema = v.object();
+  schema.shape({
+    name: v.string().required(),
+    age: v.number().positive(),
+  });
+  expect(schema.isValid({ name: '', age: null })).toBe(false);
 });
 
 it('should return false', () => {
-  expect(new Validator().object().shape({
-    name: new Validator().string().required(),
-    age: new Validator().number().positive(),
-  }).isValid({ name: 'ada', age: -5 })).toBe(false);
+  const v = new Validator();
+  const schema = v.object();
+  schema.shape({
+    name: v.string().required(),
+    age: v.number().positive(),
+  });
+  expect(schema.isValid({ name: 'ada', age: -5 })).toBe(false);
 });
