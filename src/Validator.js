@@ -88,12 +88,13 @@ export default class Validator {
         if (val === null) {
           return this.constraints[prop].constraints.nullValidation(val)
         }
+        console.log(prop, value);
+        console.log(this.constraints[prop].constraints)
         const res1 = Object.values(this.constraints[prop].constraints)
           .map((c) => c(val));
         console.log(res1);
         return res1.every((el) => el);
       })
-      console.log(res);
       return res.every((el) => el);
     }
     return Object.values(this.constraints).reduce((acc, c) => {
