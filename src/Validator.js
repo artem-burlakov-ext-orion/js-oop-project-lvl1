@@ -3,10 +3,10 @@ export default class Validator {
     nullValidation: () => true,
   }, type = '') {
     this.constraints = constraints;
+    this.type = type;
     console.log('-----------------------------------');
     console.log('THIS_CONSTRAINTS: ', this.constraints);
     console.log('THIS_TYPE: ', this.type);
-    this.type = type;
   }
 
   string() {
