@@ -3,6 +3,9 @@ export default class Validator {
     nullValidation: () => true,
   }, type = '') {
     this.constraints = constraints;
+    console.log('-----------------------------------');
+    console.log('THIS_CONSTRAINTS: ', this.constraints);
+    console.log('THIS_CONSTRAINTS: ', this.type);
     this.type = type;
   }
 
@@ -25,7 +28,6 @@ export default class Validator {
   }
 
   required() {
-    console.log(this.type);
     switch (this.type) {
       case 'string':
         this.constraints.required = (value) => value.length > 0;
