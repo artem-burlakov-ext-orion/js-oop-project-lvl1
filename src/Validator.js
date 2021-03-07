@@ -110,6 +110,9 @@ export default class Validator {
   }
 
   isValid(value) {
+    console.log(value);
+    console.log(this.constraints);
+    console.log(this.constraints.nullValidation);
     
     if (value === null) {
       return this.constraints.nullValidation(value);
