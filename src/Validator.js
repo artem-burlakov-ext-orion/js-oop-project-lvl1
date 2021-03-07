@@ -64,6 +64,7 @@ export default class Validator {
   }
 
   shape(schema) {
+    console.log('SCHEMA: ', schema);
     this.constraints = schema;
     return new Validator(this.constraints, this.type);
   }
