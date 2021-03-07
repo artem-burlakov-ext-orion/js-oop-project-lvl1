@@ -81,7 +81,7 @@ export default class Validator {
 
   isValid(value) {
     console.log('V: ', value);
-    console.log('THIS CONSTAINTS: ', this.constraints);
+    console.log('THIS CONSTRAINTS: ', this.constraints);
     if (value === null) {
       return this.constraints.nullValidation(value);
     }
@@ -91,11 +91,11 @@ export default class Validator {
         if (val === null) {
           return this.constraints.schema[prop].constraints.nullValidation(val)
         }
-        console.log(prop, val);
+        console.log('PROP AND VAL: ', prop, val);
         console.log(this.constraints.schema[prop]);
         const res1 = Object.values(this.constraints.schema[prop].constraints)
           .map((c) => c(val));
-        console.log(res1);
+        console.log('RES1: ', res1);
         return res1.every((el) => el);
       })
       return res.every((el) => el);
