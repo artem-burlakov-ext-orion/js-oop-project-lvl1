@@ -92,7 +92,7 @@ export default class Validator {
           return this.constraints.schema[prop].constraints.nullValidation(val)
         }
         console.log(prop, val);
-        console.log(this.constraints[prop]);
+        console.log(this.constraints.schema[prop]);
         const res1 = Object.values(this.constraints.schema[prop].constraints)
           .map((c) => c(val));
         console.log(res1);
