@@ -65,7 +65,7 @@ export default class Validator {
 
   shape(schema) {
     console.log('SCHEMA: ', schema);
-    this.constraints = schema;
+    this.constraints['schema'] = schema;
     return new Validator(this.constraints, this.type);
   }
 
@@ -89,11 +89,11 @@ export default class Validator {
       console.log('!!');
       const res = Object.entries(value).map(([prop, val]) => {
         if (val === null) {
-          return this.constraints[prop].constraints.nullValidation(val)
+          return this.constraints.schema[prop].constraints.nullValidation(val)
         }
         console.log(prop, val);
         console.log(this.constraints[prop]);
-        const res1 = Object.values(this.constraints[prop].constraints)
+        const res1 = Object.values(this.constraints.schema[prop].constraints)
           .map((c) => c(val));
         console.log(res1);
         return res1.every((el) => el);
