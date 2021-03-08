@@ -13,6 +13,7 @@ it('should return true because typeof \'\' === string', () => {
 });
 
 it('should return true because \'required\' does notexist', () => {
+
   expect(new Validator().string().isValid(null)).toBe(true);
 });
 
@@ -95,9 +96,11 @@ it('should return false because \'required\' does not exist', () => {
 it('should return true1', () => {
   const v = new Validator();
   const schema = v.object();
+  const nameC = v.string().required();
+  const ageC = v.number().positive();
   schema.shape({
-    name: v.string().required(),
-    age: v.number().positive(),
+    name: nameC,
+    age: ageC,
   });
   expect(schema.isValid({ name: 'kolya', age: 100 })).toBe(true);
 });

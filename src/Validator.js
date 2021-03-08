@@ -34,63 +34,43 @@ export default class Validator {
   required() {
     switch (this.type) {
       case 'string':
-        return new Validator(
-          {
-            ...this.constraints,
-            required: (value) => value.length > 0,
-            nullValidation: (value) => value !== null,
-          }, this.type);
+        this.constraints.required = (value) => value.length > 0;
+        this.constraints.nullValidation = (value) => value !== null;
+        return new Validator(this.constraints, this.type);
       case 'number':
-        return new Validator(
-          {
-            ...this.constraints,
-            required: (value) => typeof value === 'number',
-            nullValidation: (value) => value !== null,
-          }, this.type);
+        this.constraints.required = (value) => typeof value === 'number';
+        this.constraints.nullValidation = (value) => value !== null;
+        return new Validator(this.constraints, this.type);
       case 'array':
-        return new Validator(
-          {
-            ...this.constraints,
-            required: (value) => Array.isArray(value)
-          }, this.type);
+        this.constraints.required = (value) => Array.isArray(value);
+        return new Validator(this.constraints, this.type);
       default:
         throw new Error('uknown type');
     }
   }
 
   contains(substr) {
-    return new Validator(
-      {
-        ...this.constraints,
-        isContains: (value) => value.includes(substr),
-      }, this.type);
+    this.constraints.isContains = (value) => value.includes(substr);
+    return new Validator(this.constraints, this.type);
   }
 
   positive() {
-    return new Validator(
-      {
-        ...this.constraints,
-        isPositive: (value) => value > 0,
-      }, this.type);
+    this.constraints.isPositive = (value) => value > 0;
+    return new Validator(this.constraints, this.type);
   }
 
   range(min, max) {
-    return new Validator(
-      {
-        ...this.constraints,
-        isInRange: (value) => value >= min && value <= max,
-      }, this.type);
+    this.constraints.isInRange = (value) => value >= min && value <= max;
+    return new Validator(this.constraints, this.type);
   }
 
   sizeOf(length) {
-    return new Validator({
-      ...this.constraints,
-     lengthValidate: (value) => value.length === length,
-    }, this.type);
+    this.constraints.lengthValidate = (value) => value.length === length;
+    return new Validator(this.constraints, this.type);
   }
 
   shape(schema) {
-    this.constraints.schema = schema;
+    this.schema = schema;
   }
 
   addValidator(type, methodName, fn) {
@@ -110,9 +90,9 @@ export default class Validator {
   }
 
   isValid(value) {
-    console.log(value);
-    console.log(this.constraints);
-    console.log(this.constraints.nullValidation);
+    // console.log(value);
+    // console.log(this.constraints);
+    // console.log(this.constraints.nullValidation);
     
     if (value === null) {
       return this.constraints.nullValidation(value);
@@ -120,18 +100,16 @@ export default class Validator {
     if (this.type === 'object') {
       console.log('!!');
       console.log('V: ', value);
-      console.log('THIS CONSTRAINTS: ', this.constraints);
+      console.log('THIS CONSTRAINTS: ', this);
+
       const res = Object.entries(value).map(([prop, val]) => {
         if (val === null) {
-          return this.constraints.schema[prop].constraints.nullValidation(val)
+          return this.schema[prop].constraints.nullValidation(val)
         }
-        // console.log('PROP AND VAL: ', prop, val);
-        // console.log(this.constraints.schema[prop]);
-        const res1 = Object.values(this.constraints.schema[prop].constraints)
-          .map((c) => c(val));
-        // console.log('RES1: ', res1);
-        return res1.every((el) => el);
-      })
+        console.log('PROP AND VAL: ', prop, val);
+        console.log(this.schema[prop]);
+        return Object.values(this.schema[prop].constraints).map((c) => c(val)).every((el) => el);
+      });
       return res.every((el) => el);
     }
     return Object.values(this.constraints).reduce((acc, c) => {
