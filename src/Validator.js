@@ -2,9 +2,6 @@ export default class Validator {
   constructor(constraints = { nullValidation: () => true }, type = '') {
     this.constraints = constraints;
     this.type = type;
-    // console.log('-----------------------------------');
-    // console.log('THIS_CONSTRAINTS: ', this.constraints);
-    // console.log('THIS_TYPE: ', this.type);
   }
 
   string() {
@@ -12,7 +9,8 @@ export default class Validator {
       {
         ...this.constraints,
         isString: (value) => typeof value === 'string',
-      }, 'string');
+      }, 'string',
+    );
   }
 
   number() {
@@ -24,7 +22,8 @@ export default class Validator {
       {
         ...this.constraints,
         nullValidation: (value) => value !== null,
-      }, 'array');
+      }, 'array',
+    );
   }
 
   object() {
@@ -73,14 +72,11 @@ export default class Validator {
     this.schema = schema;
   }
 
-  addValidator(type, methodName, fn) {
+  addValidator(_, methodName, fn) {
     this.constraints[methodName] = { fn };
-    // this.type = type;
   }
 
   test(methodName, arg) {
-    // this.constraints[methodName].arg = arg;
-    // console.log('TEST: ', this.constraints);
     const customConstraint = {
       ...this.constraints,
       [methodName]: {
@@ -88,7 +84,6 @@ export default class Validator {
         arg,
       },
     };
-    // console.log('CUSTOM: ', customConstraint);
     return new Validator(customConstraint, this.type);
   }
 
@@ -97,16 +92,12 @@ export default class Validator {
       return this.constraints.nullValidation(value);
     }
     if (this.type === 'object') {
-      return Object.entries(value).map(([prop, val]) => val === null
-          ? this.schema[prop].constraints.nullValidation(val)
-          : Object.values(this.schema[prop].constraints).map((c) => c(val)).every((el) => el)
-      ).every((el) => el);
+      return Object.entries(value).map(([prop, val]) => (val === null
+        ? this.schema[prop].constraints.nullValidation(val)
+        : Object.values(this.schema[prop].constraints).map((c) => c(val)).every((el) => el)))
+        .every((el) => el);
     }
     return Object.values(this.constraints).reduce((acc, c) => {
-      console.log('------------');
-      console.log(value);
-      console.log(c);
-
       if (typeof c === 'object') {
         return c.fn(value, c.arg) ? acc : false;
       }

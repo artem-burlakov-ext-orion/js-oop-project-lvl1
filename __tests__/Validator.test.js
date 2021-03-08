@@ -13,7 +13,6 @@ it('should return true because typeof \'\' === string', () => {
 });
 
 it('should return true because \'required\' does notexist', () => {
-
   expect(new Validator().string().isValid(null)).toBe(true);
 });
 
@@ -125,7 +124,7 @@ it('should return false', () => {
   expect(schema.isValid({ name: '', age: null })).toBe(false);
 });
 
-it('should return false', () => {
+it('should return false because age not positive', () => {
   const v = new Validator();
   const schema = v.object();
   schema.shape({
@@ -137,14 +136,9 @@ it('should return false', () => {
 
 it('custom validator', () => {
   const v = new Validator();
-
   const fn = (value, start) => value.startsWith(start);
-  // Метод добавления новых валидаторов
-  // addValidator(type, name, fn)
   v.addValidator('string', 'startWith', fn);
-
-  // Новые валидаторы вызываются через метод test
   const schema = v.string().test('startWith', 'H');
   expect(schema.isValid('exlet')).toBe(false);
   expect(schema.isValid('Hexlet')).toBe(true);
-})
+});
