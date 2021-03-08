@@ -74,45 +74,39 @@ export default class Validator {
   }
 
   addValidator(type, methodName, fn) {
-    this.constraints[methodName] = fn;
-    this.type = type;
+    this.constraints[methodName] = { fn };
+    // this.type = type;
   }
 
   test(methodName, arg) {
     // this.constraints[methodName].arg = arg;
-    return new Validator({
+    // console.log('TEST: ', this.constraints);
+    const customConstraint = {
       ...this.constraints,
       [methodName]: {
         ...this.constraints[methodName],
         arg,
-      }
-    }, this.type);
+      },
+    };
+    // console.log('CUSTOM: ', customConstraint);
+    return new Validator(customConstraint, this.type);
   }
 
   isValid(value) {
-    // console.log(value);
-    // console.log(this.constraints);
-    // console.log(this.constraints.nullValidation);
-    
     if (value === null) {
       return this.constraints.nullValidation(value);
     }
     if (this.type === 'object') {
-      console.log('!!');
-      console.log('V: ', value);
-      console.log('THIS CONSTRAINTS: ', this);
-
-      const res = Object.entries(value).map(([prop, val]) => {
-        if (val === null) {
-          return this.schema[prop].constraints.nullValidation(val)
-        }
-        console.log('PROP AND VAL: ', prop, val);
-        console.log(this.schema[prop]);
-        return Object.values(this.schema[prop].constraints).map((c) => c(val)).every((el) => el);
-      });
-      return res.every((el) => el);
+      return Object.entries(value).map(([prop, val]) => val === null
+          ? this.schema[prop].constraints.nullValidation(val)
+          : Object.values(this.schema[prop].constraints).map((c) => c(val)).every((el) => el)
+      ).every((el) => el);
     }
     return Object.values(this.constraints).reduce((acc, c) => {
+      console.log('------------');
+      console.log(value);
+      console.log(c);
+
       if (typeof c === 'object') {
         return c.fn(value, c.arg) ? acc : false;
       }

@@ -134,3 +134,17 @@ it('should return false', () => {
   });
   expect(schema.isValid({ name: 'ada', age: -5 })).toBe(false);
 });
+
+it('custom validator', () => {
+  const v = new Validator();
+
+  const fn = (value, start) => value.startsWith(start);
+  // Метод добавления новых валидаторов
+  // addValidator(type, name, fn)
+  v.addValidator('string', 'startWith', fn);
+
+  // Новые валидаторы вызываются через метод test
+  const schema = v.string().test('startWith', 'H');
+  expect(schema.isValid('exlet')).toBe(false);
+  expect(schema.isValid('Hexlet')).toBe(true);
+})
