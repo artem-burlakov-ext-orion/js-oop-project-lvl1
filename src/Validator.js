@@ -98,9 +98,10 @@ export default class Validator {
         .every((el) => el);
     }
     return Object.values(this.constraints).reduce((acc, c) => {
-      return typeof c === 'object'
-        ? c.fn(value, c.arg) ? acc : false
-        : c(value) ? acc : false;
+      if (typeof c === 'object') {
+        return c.fn(value, c.arg) ? acc : false;
+      }
+      return c(value) ? acc : false;
     }, true);
   }
 }
